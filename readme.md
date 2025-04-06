@@ -37,11 +37,11 @@ A full-stack web-based application to manage projects and tasks. Built using **A
 
 ### 📁 Project List View
 
-![Projects View](./screenshots/projects-view.png)
+![Projects View](/screenshots/project-view.png)
 
 ### ✅ Task List with Filters + Pagination
 
-![Tasks View](./screenshots/tasks-view.png)
+![Tasks View](./screenshots/task-view.png)
 
 > ⚠️ To enable screenshots above, create a `/screenshots` folder in your repo and upload images named:
 > - `projects-view.png`
