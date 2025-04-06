@@ -43,9 +43,13 @@ A full-stack web-based application to manage projects and tasks. Built using **A
 
 ![Tasks View](./screenshots/task-view.png)
 
-> ⚠️ To enable screenshots above, create a `/screenshots` folder in your repo and upload images named:
-> - `projects-view.png`
-> - `tasks-view.png`
+### 📁 Project List Edit
+
+![Projects View](/screenshots/project-edit.png)
+
+### 📁 Task List Edit
+
+![Projects View](/screenshots/task-edit.png)
 
 ---
 
