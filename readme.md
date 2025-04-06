@@ -98,9 +98,6 @@ DB_NAME=task_manager_db
 
 ##🔧 Setup Instructions
 1️⃣ Backend
-bash
-Copy
-Edit
 cd task-manager-backend
 npm install
 npm run dev
@@ -109,9 +106,6 @@ Make sure your MySQL service is running
 Configure .env for database credentials
 
 ##2️⃣ Frontend
-bash
-Copy
-Edit
 cd task-manager-frontend
 npm install
 ng serve
