@@ -1,21 +1,26 @@
-import { Component,OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { TaskService, Task } from '../../services/task.service';
 import { ProjectService, Project } from '../../services/project.service';
-import { Router } from '@angular/router';
-import { ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-task-list',
   templateUrl: './task-list.component.html',
   styleUrls: ['./task-list.component.css']
 })
-
 export class TaskListComponent implements OnInit {
   tasks: Task[] = [];
   filteredTasks: Task[] = [];
+  paginatedTasks: Task[] = [];
+
   statusFilter: string = '';
   priorityFilter: string = '';
+  searchQuery: string = '';
+
   projects: Project[] = [];
+
+  pageSize = 5;
+  currentPage = 0;
 
   constructor(
     private taskService: TaskService,
@@ -29,10 +34,9 @@ export class TaskListComponent implements OnInit {
       const projectId = params['project'];
       this.loadTasks(projectId);
     });
-  
+
     this.loadProjects();
   }
-  
 
   loadTasks(projectId?: number): void {
     this.taskService.getTasks().subscribe({
@@ -43,24 +47,36 @@ export class TaskListComponent implements OnInit {
       error: (err) => console.error('Error loading tasks', err)
     });
   }
-  
 
   loadProjects(): void {
     this.projectService.getProjects().subscribe({
-      next: (data) => (this.projects = data)
+      next: (data) => (this.projects = data),
+      error: (err) => console.error('Error loading projects', err)
     });
-  }
-
-  getProjectName(id: number): string {
-    const project = this.projects.find(p => p.id === id);
-    return project ? project.name : 'Unknown';
   }
 
   applyFilters(): void {
-    this.filteredTasks = this.tasks.filter(task => {
-      return (!this.statusFilter || task.status === this.statusFilter) &&
-             (!this.priorityFilter || task.priority === this.priorityFilter);
-    });
+    const filtered = this.tasks.filter(task =>
+      (!this.statusFilter || task.status === this.statusFilter) &&
+      (!this.priorityFilter || task.priority === this.priorityFilter) &&
+      (!this.searchQuery || task.title.toLowerCase().includes(this.searchQuery.toLowerCase()))
+    );
+
+    this.filteredTasks = filtered;
+    this.currentPage = 0;
+    this.updatePaginatedTasks();
+  }
+
+  updatePaginatedTasks(): void {
+    const startIndex = this.currentPage * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.paginatedTasks = this.filteredTasks.slice(startIndex, endIndex);
+  }
+
+  onPageChange(event: any): void {
+    this.pageSize = event.pageSize;
+    this.currentPage = event.pageIndex;
+    this.updatePaginatedTasks();
   }
 
   onCreate(): void {
@@ -78,5 +94,70 @@ export class TaskListComponent implements OnInit {
       });
     }
   }
-}
 
+  getProjectName(id: number): string {
+    const project = this.projects.find(p => p.id === id);
+    return project ? project.name : 'Unknown';
+  }
+
+  getPriorityColor(priority: string): string {
+    switch (priority) {
+      case 'High': return 'warn';
+      case 'Medium': return 'accent';
+      case 'Low': return 'primary';
+      default: return '';
+    }
+  }
+
+  getStatusColor(status: string): 'primary' | 'accent' | 'warn' {
+    switch (status) {
+      case 'Completed': return 'primary';
+      case 'In Progress': return 'accent';
+      default: return 'primary';
+    }
+  }
+  sortTasks(criteria: string): void {
+    switch (criteria) {
+      case 'title':
+        this.filteredTasks.sort((a, b) =>
+          (a.title || '').localeCompare(b.title || '')
+        );
+        break;
+  
+      case 'due':
+        this.filteredTasks.sort((a, b) => {
+          const aDate = a.due_date ? new Date(a.due_date).getTime() : 0;
+          const bDate = b.due_date ? new Date(b.due_date).getTime() : 0;
+          return aDate - bDate;
+        });
+        break;
+  
+      case 'priority':
+        const priorityOrder: { [key: string]: number } = { High: 1, Medium: 2, Low: 3 };
+        this.filteredTasks.sort((a, b) =>
+          (priorityOrder[a.priority || 'Low'] || 4) - (priorityOrder[b.priority || 'Low'] || 4)
+        );
+        break;
+    }
+  
+    this.currentPage = 0;
+    this.updatePaginatedTasks();
+  }
+  getDueDateStatus(task: Task): 'overdue' | 'today' | 'upcoming' | 'completed' {
+    if (!task.due_date) return 'upcoming';
+    if (task.status === 'Completed') return 'completed';
+  
+    const today = new Date();
+    const dueDate = new Date(task.due_date);
+  
+    today.setHours(0, 0, 0, 0);
+    dueDate.setHours(0, 0, 0, 0);
+  
+    if (dueDate.getTime() === today.getTime()) return 'today';
+    if (dueDate < today) return 'overdue';
+    return 'upcoming';
+  }
+  
+    
+  
+}

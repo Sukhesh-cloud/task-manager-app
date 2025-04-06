@@ -1,14 +1,31 @@
 <div class="toolbar">
     <button mat-raised-button color="primary" (click)="onCreate()">+ New Project</button>
-</div>
+  </div>
   
-<mat-card *ngFor="let project of projects" class="project-card">
-<mat-card-title>{{ project.name }}</mat-card-title>
-<mat-card-content>{{ project.description }}</mat-card-content>
-<mat-card-actions>
-    <button mat-button color="primary" (click)="viewTasks(project.id!)">View Tasks</button>
-    <button mat-button color="accent" (click)="onEdit(project.id!)">Edit</button>
-    <button mat-button color="warn" (click)="onDelete(project.id!)">Delete</button>
-</mat-card-actions>
-</mat-card>
+  <mat-card *ngFor="let project of projects" class="project-card">
+    <mat-card-title>{{ project.name }}</mat-card-title>
+  
+    <mat-card-content>
+      {{ project.description }}
+  
+      <!-- Progress Bar -->
+      <div *ngIf="project.progress !== undefined" class="progress-bar-wrapper">
+        <mat-progress-bar
+          mode="determinate"
+          [value]="project.progress"
+          [color]="project.progressColor"
+        ></mat-progress-bar>
+        <small>
+          {{ project.completedCount }} of {{ project.totalCount }} tasks completed
+        </small>
+      </div>
+      
+    </mat-card-content>
+  
+    <mat-card-actions>
+      <button mat-button color="primary" (click)="viewTasks(project.id!)">View Tasks</button>
+      <button mat-button color="accent" (click)="onEdit(project.id!)">Edit</button>
+      <button mat-button color="warn" (click)="onDelete(project.id!)">Delete</button>
+    </mat-card-actions>
+  </mat-card>
   

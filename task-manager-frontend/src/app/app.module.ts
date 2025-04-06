@@ -29,6 +29,14 @@ import { MatNativeDateModule } from '@angular/material/core';
 
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+
+
+import { MatChipsModule } from '@angular/material/chips';
+
+import { MatPaginatorModule } from '@angular/material/paginator';
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -55,7 +63,10 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
     MatSelectModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatProgressBarModule,
+    MatChipsModule,
+    MatPaginatorModule
   ],
   providers: [],
   bootstrap: [AppComponent]

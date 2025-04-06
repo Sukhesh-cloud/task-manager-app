@@ -1,5 +1,6 @@
 import { Component,OnInit} from '@angular/core';
 import { ProjectService, Project } from '../../services/project.service';
+import { TaskService, Task } from '../../services/task.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -11,8 +12,9 @@ import { Router } from '@angular/router';
 
 export class ProjectListComponent implements OnInit {
   projects: Project[] = [];
+  tasks: Task[] = [];
 
-  constructor(private projectService: ProjectService, private router: Router) {}
+  constructor(private projectService: ProjectService, private router: Router,private taskService: TaskService) {}
 
   ngOnInit(): void {
     this.loadProjects();
@@ -20,10 +22,44 @@ export class ProjectListComponent implements OnInit {
 
   loadProjects(): void {
     this.projectService.getProjects().subscribe({
-      next: (data) => (this.projects = data),
+      next: (projectData) => {
+        this.projects = projectData;
+
+        // Fetch all tasks and calculate progress
+        this.taskService.getTasks().subscribe({
+          next: (taskData) => {
+            this.tasks = taskData;
+            this.projects.forEach(project => {
+              const projectTasks = this.tasks.filter(t => t.project_id === project.id);
+              const completedTasks = projectTasks.filter(t => t.status === 'Completed').length;
+              const totalTasks = projectTasks.length;
+            
+              const progress = totalTasks > 0
+                ? Math.round((completedTasks / totalTasks) * 100)
+                : 0;
+            
+              let color = 'warn'; // default red
+              if (progress === 100) {
+                color = 'primary'; // green
+              } else if (progress >= 50) {
+                color = 'accent'; // orange
+              }
+            
+              // Assign progress data to project
+              project['progress'] = progress;
+              project['completedCount'] = completedTasks;
+              project['totalCount'] = totalTasks;
+              project['progressColor'] = color;
+            });
+            
+          }
+        });
+      },
       error: (err) => console.error('Error loading projects', err),
     });
   }
+
+
 
   onEdit(id: number) {
     this.router.navigate(['/projects/edit', id]);

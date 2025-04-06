@@ -7,6 +7,11 @@ export interface Project {
   name: string;
   description?: string;
   created_at?: string;
+  progress?: number; 
+
+  completedCount?: number;
+  totalCount?: number;
+  progressColor?: string;
 }
 
 @Injectable({

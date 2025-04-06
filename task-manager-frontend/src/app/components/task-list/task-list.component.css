@@ -1,10 +1,58 @@
-.toolbar {
-    margin-bottom: 16px;
-  }
-  
-  .filters {
-    display: flex;
-    gap: 16px;
-    margin-bottom: 16px;
-  }
-  
+/* Align toolbar horizontally */
+.top-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+/* Widths for search + filter fields */
+.search-field {
+  width: 240px;
+}
+
+.filter-field {
+  width: 180px;
+}
+
+/* Task card layout */
+.task-card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.task-card {
+  flex: 1 1 300px;
+  max-width: 340px;
+}
+
+/* Chip spacing */
+.chip-wrapper {
+  margin-top: 12px;
+}
+
+.chip-wrapper mat-chip {
+  margin-right: 8px;
+  margin-top: 4px;
+}
+mat-chip.overdue {
+  background-color: #f44336 !important; /* Red */
+  color: white;
+}
+
+mat-chip.today {
+  background-color: #2196f3 !important; /* Blue-ish */
+  color: white;
+}
+
+mat-chip.completed {
+  background-color: #4caf50 !important; /* Green */
+  color: white;
+}
+
+mat-chip.upcoming {
+  background-color: #9e9e9e !important; /* Gray */
+  color: white;
+}
